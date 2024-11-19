@@ -5,8 +5,8 @@ import 'login_screen.dart';
 import 'registration_screen.dart';
 import 'message_boards_screen.dart';
 import 'chat_screen.dart';
-import 'profile_screen.dart';
 import 'settings_screen.dart';
+import 'edit_profile_screen.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +19,11 @@ Future<void> initializeMessageBoards() async {
   final boards = ['Games', 'Business', 'Public Health', 'Study'];
   final firestore = FirebaseFirestore.instance;
   
+  // Get existing boards
   final existingBoards = await firestore.collection('message_boards').get();
   final existingBoardNames = existingBoards.docs.map((doc) => doc['name'] as String).toList();
 
+  // Add only boards that don't exist yet
   for (final board in boards) {
     if (!existingBoardNames.contains(board)) {
       await firestore.collection('message_boards').add({
@@ -37,12 +39,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Homework 4 Message Board',
+      title: 'Message Board App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.light,
       ),
-      initialRoute: '/login',  
+      initialRoute: '/login',
       routes: {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegistrationScreen(),
@@ -50,8 +52,8 @@ class MyApp extends StatelessWidget {
         '/chat': (context) => ChatScreen(
               boardId: ModalRoute.of(context)!.settings.arguments as String,
             ),
-        '/profile': (context) => ProfileScreen(),
         '/settings': (context) => SettingsScreen(),
+        '/edit_profile': (context) => EditProfileScreen(),  
       },
     );
   }
