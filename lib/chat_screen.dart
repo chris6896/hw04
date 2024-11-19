@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'edit_profile_screen.dart';  
 
 class ChatScreen extends StatelessWidget {
   final String boardId;
+  final messageController = TextEditingController();
 
   ChatScreen({required this.boardId});
-
-  final messageController = TextEditingController();
 
   Future<void> sendMessage() async {
     if (messageController.text.isNotEmpty) {
       final userId = FirebaseAuth.instance.currentUser!.uid;
-
       final username = FirebaseAuth.instance.currentUser!.displayName ?? 'Anonymous';
 
       await FirebaseFirestore.instance
@@ -33,7 +31,21 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Chat')),
+      appBar: AppBar(
+        title: Text('Chat'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EditProfileScreen()),
+              );
+            },
+            tooltip: 'Edit Profile',
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
